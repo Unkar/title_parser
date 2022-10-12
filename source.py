@@ -39,10 +39,10 @@ def connect_to_page(driver, page_number, wait_time=2):
         )
         return True
     except Exception as e:
-        # print(e)
+        print(e)
         # connection_attempts += 1
         #print(f"Error connecting to {config.URL + page_number}.")
-        # print(f"Attempt #{connection_attempts}.")
+        #print(f"Attempt #{connection_attempts}.")
         return False
 
 # Функция парсинга страницы. Парсим сначала маркер не пустой страницы attrs={"class": "CenterTitle"}. Затем парсим текст первой ссылки.

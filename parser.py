@@ -44,8 +44,7 @@ def main():
     start_time = dt.datetime.now()
     begin_page = int(input("Введите стартовую страницу: "))
     page_step = 10
-    step_numbers = int(
-        input(f"Введите количество шагов по {page_step} страниц: "))
+    step_numbers = int(input(f"Введите количество шагов по {page_step} страниц: "))
     stop_page = begin_page + page_step*step_numbers
     with ThreadPoolExecutor() as executor:
         futures = [executor.submit(run_process, i, i + page_step, f"{config.PATH_LOG}log_{i}-{i + page_step}.csv", (i - begin_page)//page_step) for i in range(begin_page, stop_page, page_step)]
