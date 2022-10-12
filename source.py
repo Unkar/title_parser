@@ -39,7 +39,7 @@ def connect_to_page(driver, page_number, wait_time=2):
         )
         return True
     except Exception as e:
-        print(e)
+        #print(e)
         # connection_attempts += 1
         #print(f"Error connecting to {config.URL + page_number}.")
         #print(f"Attempt #{connection_attempts}.")
@@ -76,6 +76,8 @@ def parse_page(driver, page_number):
 # Функция записи в файл. Передаем словарь с данными и имя файла.
 
  
-def write_to_file(output_dict, filename):
+def write_to_file(output_dict, filename, driver_count):
     with open(filename, "a") as file:
-        file.write(f"{output_dict['id']};{output_dict['url']};{output_dict['title']};{output_dict['link']}\n")
+        if not (output_dict["title"] == "Empty" and output_dict["link"] == "Empty"): # Проверяем, что страница не пустая
+            file.write(f"D{driver_count}:{output_dict['id']};{output_dict['url']};{output_dict['title']};{output_dict['link']}\n")
+            print(f"Добавлена запись D{driver_count} : {output_dict['id']} - {output_dict['title']} - {output_dict['link']}")
