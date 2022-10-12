@@ -17,7 +17,7 @@ def add_to_log(log, file_path):
 
 
 
-def run_process(start_page, end_page, file_path, driver_count):
+def run_process(start_page, end_page, file_path):
     wait_time = 2
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -27,7 +27,7 @@ def run_process(start_page, end_page, file_path, driver_count):
         driver.get(config.URL + str(i))
         if connect_to_page(driver, i, wait_time):
             output_dict = parse_page(driver, i)
-            write_to_file(output_dict, file_path, driver_count)
+            write_to_file(output_dict, file_path)
         # try:
         #     WebDriverWait(driver, wait_time).until(
         #         lambda driver: driver.find_element(By.CLASS_NAME, "CenterTitle")
@@ -39,15 +39,16 @@ def run_process(start_page, end_page, file_path, driver_count):
         #     #add_to_log(f"""D{driver_count};{str(i)};{config.URL + str(i)};Empty\n""", file_path)
     driver.quit()
 
+
 def main():
     start_time = dt.datetime.now()
     begin_page = int(input("Введите стартовую страницу: "))
     page_step = 10
-    step_numbers = int(input(f"Введите количество шагов по {page_step} страниц: "))
+    step_numbers = int(
+        input(f"Введите количество шагов по {page_step} страниц: "))
     stop_page = begin_page + page_step*step_numbers
     with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(run_process, i, i + page_step, f"{config.PATH_LOG}log_{i}-{i + page_step}.csv", (i - begin_page)//page_step)
-                     for i in range(begin_page, stop_page, page_step)]
+        futures = [executor.submit(run_process, i, i + page_step, f"{config.PATH_LOG}log_{i}-{i + page_step}.csv", (i - begin_page)//page_step) for i in range(begin_page, stop_page, page_step)]
         wait(futures)
     end_time = dt.datetime.now()
     print(f"Time taken: {end_time - start_time}")

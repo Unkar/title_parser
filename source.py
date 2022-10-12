@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 
 import config
 
+# Функция включения и настройки драйвера
+
 
 def get_driver(headless=True):
     chrome_options = Options()
@@ -24,6 +26,9 @@ def get_driver(headless=True):
     driver = webdriver.Chrome(options=chrome_options)
     return driver
 
+# Функция проверки наличия элемента на странице. Элемент является маркером, что ссылка не битая.
+
+
 def connect_to_page(driver, page_number, wait_time=2):
     driver.get(config.URL + str(page_number))
     # connection_attempts = 0
@@ -31,14 +36,17 @@ def connect_to_page(driver, page_number, wait_time=2):
     try:
         WebDriverWait(driver, wait_time).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, "CenterTitle"))
-                            )
+        )
         return True
     except Exception as e:
-        #print(e)
-            # connection_attempts += 1
+        # print(e)
+        # connection_attempts += 1
         #print(f"Error connecting to {config.URL + page_number}.")
-            # print(f"Attempt #{connection_attempts}.")
+        # print(f"Attempt #{connection_attempts}.")
         return False
+
+# Функция парсинга страницы. Парсим сначала маркер не пустой страницы attrs={"class": "CenterTitle"}. Затем парсим текст первой ссылки.
+
 
 def parse_page(driver, page_number):
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -49,7 +57,7 @@ def parse_page(driver, page_number):
     links = soup.find_all(attrs={"class": "CenterLink"})
     for link in links:
         if link.text == "":
-            link_text = "Empty title"
+            link_text = "Empty"
         else:
             link_text = link.text
             break
@@ -65,12 +73,9 @@ def parse_page(driver, page_number):
 #         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 #         writer.writerow(output_dict)
 
-def write_to_file(output_dict, filename, driver_count):
+# Функция записи в файл. Передаем словарь с данными и имя файла.
+
+ 
+def write_to_file(output_dict, filename):
     with open(filename, "a") as file:
-        file.write(f"{driver_count};{output_dict['id']};{output_dict['url']};{output_dict['title']};{output_dict['link']}\n")            
-    
-
-        
-
-
-
+        file.write(f"{output_dict['id']};{output_dict['url']};{output_dict['title']};{output_dict['link']}\n")
