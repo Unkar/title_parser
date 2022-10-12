@@ -27,7 +27,7 @@ def do_a_part(start_page, end_page):
     start_time = time()
     filename = f"log_{start_page}-{end_page}.csv"
     futures = []
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=100) as executor:
         futures = [executor.submit(run_process, page_number, filename)
                    for page_number in range(start_page, end_page)]
     wait(futures, timeout=2)
