@@ -34,11 +34,11 @@ def connect_to_page(driver, page_number, wait_time=2):
                             )
         return True
     except Exception as e:
-        print(e)
+        #print(e)
             # connection_attempts += 1
-        print(f"Error connecting to {config.URL + page_number}.")
+        #print(f"Error connecting to {config.URL + page_number}.")
             # print(f"Attempt #{connection_attempts}.")
-    return False
+        return False
 
 def parse_page(driver, page_number):
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -65,9 +65,9 @@ def parse_page(driver, page_number):
 #         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 #         writer.writerow(output_dict)
 
-def write_to_file(output_dict, filename):
+def write_to_file(output_dict, filename, driver_count):
     with open(filename, "a") as file:
-        file.write(f"{output_dict['id']};{output_dict['url']};{output_dict['title']};{output_dict['link']}\n")            
+        file.write(f"{driver_count};{output_dict['id']};{output_dict['url']};{output_dict['title']};{output_dict['link']}\n")            
     
 
         
