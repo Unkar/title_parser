@@ -11,14 +11,23 @@ from concurrent.futures import ThreadPoolExecutor, wait
 from source import get_driver, connect_to_page, parse_page, write_to_file
 
 
-def add_to_log(log, file_path):
-    with open(file_path, "a") as f:
-        f.write(log)
+def get_start_page():
+    start_params_dict = {}
+    file = open("plan.txt", "r")
+    lines = file.readlines()
+    for line in lines:
+        start_params_dict[line.split("=")[0]] = line.split("=")[1]
+    file.close()
+    return start_params_dict
 
-
+def write_plan(end_page,step_numbers):
+    file= open("plan.txt","w")
+    file.write(f"begin_page={end_page}\n")
+    file.write(f"step_numbers={step_numbers}")
+        
 
 def run_process(start_page, end_page, file_path, driver_count):
-    wait_time = 2
+    wait_time = 3
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(options=chrome_options)
@@ -43,16 +52,19 @@ def run_process(start_page, end_page, file_path, driver_count):
 
 
 def main():
-    start_time = dt.datetime.now()
-    begin_page = int(input("Введите стартовую страницу: "))
-    page_step = 100
-    step_numbers = int(input(f"Введите количество шагов по {page_step} страниц: "))
-    stop_page = begin_page + page_step*step_numbers
-    with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(run_process, i, i + page_step, f"{config.PATH_LOG}log_{i}-{i + page_step}.csv", (i - begin_page)//page_step) for i in range(begin_page, stop_page, page_step)]
-        wait(futures, timeout=2)
-    end_time = dt.datetime.now()
-    print(f"Time taken: {end_time - start_time}")
+    while True:
+        start_params_dict = get_start_page()
+        start_time = dt.datetime.now()
+        begin_page = int(start_params_dict["begin_page"])
+        page_step = 200
+        step_numbers = int(start_params_dict["step_numbers"])
+        stop_page = begin_page + page_step*step_numbers
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(run_process, i, i + page_step, f"{config.PATH_LOG}log_{i}-{i + page_step}.csv", (i - begin_page)//page_step) for i in range(begin_page, stop_page, page_step)]
+            wait(futures)
+        end_time = dt.datetime.now()
+        print(f"Time taken: {end_time - start_time}")
+        write_plan(stop_page,step_numbers)
 
 
 if __name__ == "__main__":

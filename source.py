@@ -29,7 +29,7 @@ def get_driver(headless=True):
 # Функция проверки наличия элемента на странице. Элемент является маркером, что ссылка не битая.
 
 
-def connect_to_page(driver, page_number, wait_time=2):
+def connect_to_page(driver, page_number, wait_time=3):
     driver.get(config.URL + str(page_number))
     # connection_attempts = 0
     # while connection_attempts < 3:
